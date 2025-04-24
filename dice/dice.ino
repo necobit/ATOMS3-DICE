@@ -51,7 +51,7 @@ void loop() {
     // During the rolling animation
     if (currentTime - rollStartTime < rollDuration) {
       // Display random numbers during animation
-      if ((currentTime - rollStartTime) % 200 == 0) { // Change number every 200ms
+      if ((currentTime - rollStartTime) % 100 == 0) { // Change number every 100ms (0.1 seconds)
         int randomFace = random(1, 7); // Random number between 1-6
         displayNumber(randomFace);
       }
