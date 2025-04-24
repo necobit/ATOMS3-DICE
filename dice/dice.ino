@@ -62,6 +62,13 @@ void loop() {
       diceResult = random(1, 7); // Final random number between 1-6
       displayNumber(diceResult);
       
+      // Add white corners to indicate final result
+      int cornerSize = 5;
+      M5.Display.fillRect(0, 0, cornerSize, cornerSize, WHITE);                                   // Top-left
+      M5.Display.fillRect(M5.Display.width() - cornerSize, 0, cornerSize, cornerSize, WHITE);     // Top-right
+      M5.Display.fillRect(0, M5.Display.height() - cornerSize, cornerSize, cornerSize, WHITE);    // Bottom-left
+      M5.Display.fillRect(M5.Display.width() - cornerSize, M5.Display.height() - cornerSize, cornerSize, cornerSize, WHITE); // Bottom-right
+      
       // Reset rolling state
       rolling = false;
       lastChangeTime = 0;
