@@ -1,8 +1,4 @@
-#include "M5AtomS3.h"
-#include "M5_IMU.h"
-
-// IMU sensor
-IMU imu;
+#include "M5Unified.h"
 
 // Variables for dice
 int diceResult = 0;
@@ -14,19 +10,13 @@ const unsigned long rollDuration = 3000; // 3 seconds of animation
 const float shakeThreshold = 2.0; // Adjust based on sensitivity needed
 
 void setup() {
-  M5.begin(true, true, false, false); // Initialize M5AtomS3
-  M5.dis.clear();
-  
-  // Initialize IMU
-  if (!imu.begin()) {
-    M5.dis.fillpix(0xff0000); // Red if IMU initialization fails
-    delay(1000);
-  }
+  auto cfg = M5.config();
+  M5.begin(cfg);
   
   // Show ready state
-  M5.dis.fillpix(0x00ff00); // Green when ready
+  M5.Display.fillScreen(GREEN);
   delay(500);
-  M5.dis.clear();
+  M5.Display.fillScreen(BLACK);
   
   // Display initial dice face
   displayNumber(1);
@@ -40,7 +30,7 @@ void loop() {
   float accX, accY, accZ;
   
   // Read accelerometer data
-  imu.getAccel(&accX, &accY, &accZ);
+  M5.Imu.getAcceleration(&accX, &accY, &accZ);
   
   // Calculate total acceleration magnitude
   float totalAcc = sqrt(accX * accX + accY * accY + accZ * accZ);
@@ -50,7 +40,7 @@ void loop() {
     // Start rolling animation
     rolling = true;
     rollStartTime = millis();
-    M5.dis.fillpix(0x0000ff); // Blue during rolling
+    M5.Display.fillScreen(BLUE); // Blue during rolling
     delay(100);
   }
   
@@ -84,52 +74,59 @@ void loop() {
 
 // Function to display dice number on the LED matrix
 void displayNumber(int number) {
-  M5.dis.clear();
+  M5.Display.fillScreen(BLACK);
+  
+  // For ATOMS3, we need to adjust the display method
+  // The LED matrix is 5x5 but we'll use a 3x3 grid for dice patterns
+  int centerX = M5.Display.width() / 2;
+  int centerY = M5.Display.height() / 2;
+  int dotSize = 8;
+  int spacing = 20;
   
   switch (number) {
     case 1:
       // Center dot
-      M5.dis.drawpix(2, 2, 0xffffff);
+      M5.Display.fillCircle(centerX, centerY, dotSize, WHITE);
       break;
       
     case 2:
       // Top-left and bottom-right
-      M5.dis.drawpix(1, 1, 0xffffff);
-      M5.dis.drawpix(3, 3, 0xffffff);
+      M5.Display.fillCircle(centerX - spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY + spacing, dotSize, WHITE);
       break;
       
     case 3:
       // Top-left, center, and bottom-right
-      M5.dis.drawpix(1, 1, 0xffffff);
-      M5.dis.drawpix(2, 2, 0xffffff);
-      M5.dis.drawpix(3, 3, 0xffffff);
+      M5.Display.fillCircle(centerX - spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX, centerY, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY + spacing, dotSize, WHITE);
       break;
       
     case 4:
       // Four corners
-      M5.dis.drawpix(1, 1, 0xffffff);
-      M5.dis.drawpix(1, 3, 0xffffff);
-      M5.dis.drawpix(3, 1, 0xffffff);
-      M5.dis.drawpix(3, 3, 0xffffff);
+      M5.Display.fillCircle(centerX - spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX - spacing, centerY + spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY + spacing, dotSize, WHITE);
       break;
       
     case 5:
       // Four corners and center
-      M5.dis.drawpix(1, 1, 0xffffff);
-      M5.dis.drawpix(1, 3, 0xffffff);
-      M5.dis.drawpix(2, 2, 0xffffff);
-      M5.dis.drawpix(3, 1, 0xffffff);
-      M5.dis.drawpix(3, 3, 0xffffff);
+      M5.Display.fillCircle(centerX - spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX - spacing, centerY + spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX, centerY, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY + spacing, dotSize, WHITE);
       break;
       
     case 6:
       // Six dots in 2 columns of 3
-      M5.dis.drawpix(1, 1, 0xffffff);
-      M5.dis.drawpix(1, 2, 0xffffff);
-      M5.dis.drawpix(1, 3, 0xffffff);
-      M5.dis.drawpix(3, 1, 0xffffff);
-      M5.dis.drawpix(3, 2, 0xffffff);
-      M5.dis.drawpix(3, 3, 0xffffff);
+      M5.Display.fillCircle(centerX - spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX - spacing, centerY, dotSize, WHITE);
+      M5.Display.fillCircle(centerX - spacing, centerY + spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY - spacing, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY, dotSize, WHITE);
+      M5.Display.fillCircle(centerX + spacing, centerY + spacing, dotSize, WHITE);
       break;
   }
 }
