@@ -40,8 +40,8 @@ void loop() {
     // Start rolling animation
     rolling = true;
     rollStartTime = millis();
-    M5.Display.fillScreen(BLUE); // Blue during rolling
-    delay(100);
+    // Start immediately with a random dice face instead of blue screen
+    displayNumber(random(1, 7));
   }
   
   // Handle dice rolling animation
