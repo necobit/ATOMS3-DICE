@@ -30,7 +30,7 @@ void loop() {
   float accX, accY, accZ;
   
   // Read accelerometer data
-  M5.Imu.getAcceleration(&accX, &accY, &accZ);
+  M5.Imu.getAccelData(&accX, &accY, &accZ);
   
   // Calculate total acceleration magnitude
   float totalAcc = sqrt(accX * accX + accY * accY + accZ * accZ);
