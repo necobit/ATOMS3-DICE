@@ -46,14 +46,16 @@ void loop() {
   
   // Handle dice rolling animation
   if (rolling) {
+    static unsigned long lastChangeTime = 0;
     unsigned long currentTime = millis();
     
     // During the rolling animation
     if (currentTime - rollStartTime < rollDuration) {
-      // Display random numbers during animation
-      if ((currentTime - rollStartTime) % 100 == 0) { // Change number every 100ms (0.1 seconds)
+      // Display random numbers during animation - ensure we change every 100ms
+      if (currentTime - lastChangeTime >= 100) { // Change number every 100ms (0.1 seconds)
         int randomFace = random(1, 7); // Random number between 1-6
         displayNumber(randomFace);
+        lastChangeTime = currentTime;
       }
     } else {
       // Animation finished, show final result
@@ -62,6 +64,7 @@ void loop() {
       
       // Reset rolling state
       rolling = false;
+      lastChangeTime = 0;
       
       // Wait a moment before allowing another shake
       delay(1000);
